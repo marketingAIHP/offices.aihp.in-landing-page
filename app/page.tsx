@@ -223,7 +223,18 @@ export default function Home() {
         <section className="hero-section" aria-labelledby="hero-title">
           <div className="hero-intro">
             <p className="eyebrow">Built around your business</p>
-            <h1 id="hero-title">Your Gurgaon office.<br />Ready in 60 days.</h1>
+            <h1 id="hero-title">
+              <span className="hero-title-desktop">
+                Your Gurgaon office.
+                <br />
+                Ready in 60 days.
+              </span>
+              <span className="hero-title-mobile" aria-hidden="true">
+                <span>Your Gurgaon</span>
+                <span>office. Ready in</span>
+                <span>60 days.</span>
+              </span>
+            </h1>
             <p className="hero-copy">Custom-built, fully managed Grade-A offices across eight prime Gurgaon locations. Zero CapEx.</p>
             <p className="hero-price"><span>From</span> ₹4,500 <small>/ seat / month</small></p>
           </div>
