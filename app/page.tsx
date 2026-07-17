@@ -291,23 +291,27 @@ export default function Home() {
                 <div className="form-step" hidden={step !== 1}>
                   <p className="step-label">Step 1 of 2 - tell us your office brief</p>
                   <div className="form-grid">
-                    <label>
+                    <label className="form-field">
                       Seats needed
-                      <select name="no_of_workstations_required" defaultValue="">
-                        <option value="" disabled>Select team size</option>
-                        <option value="20 to 30">20 to 30</option>
-                        <option value="31 to 50">31 to 50</option>
-                        <option value="51 to 75">51 to 75</option>
-                        <option value="76 to 100">76 to 100</option>
-                        <option value="101+">101+</option>
-                      </select>
+                      <span className="select-wrap">
+                        <select name="no_of_workstations_required" defaultValue="">
+                          <option value="" disabled>Select team size</option>
+                          <option value="20 to 30">20 to 30</option>
+                          <option value="31 to 50">31 to 50</option>
+                          <option value="51 to 75">51 to 75</option>
+                          <option value="76 to 100">76 to 100</option>
+                          <option value="101+">101+</option>
+                        </select>
+                      </span>
                     </label>
-                    <label>
+                    <label className="form-field">
                       Preferred location
-                      <select name="preferred_location" defaultValue="">
-                        <option value="" disabled>Select a corridor</option>
-                        {locations.map((location) => <option key={location.name} value={location.name}>{location.name}</option>)}
-                      </select>
+                      <span className="select-wrap">
+                        <select name="preferred_location" defaultValue="">
+                          <option value="" disabled>Select a corridor</option>
+                          {locations.map((location) => <option key={location.name} value={location.name}>{location.name}</option>)}
+                        </select>
+                      </span>
                     </label>
                   </div>
                   {step === 1 && error && <p className="form-error" role="alert">{error}</p>}
