@@ -3,10 +3,9 @@
 import Image from "next/image";
 import type { FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { siteUrl } from "../lib/site";
 
-const HUBSPOT_SUBMIT_URL =
-  "https://api.hsforms.com/submissions/v3/integration/submit/45909301/345ea5aa-a700-41ca-a9b0-f86fac97fc6f";
 const RECAPTCHA_SITE_KEY = "6Lf4ntUrAAAAAC_d1AU2Um-wqr0iZxVOax6rdkDN";
 
 const locations = [
@@ -34,7 +33,7 @@ declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];
     fbq?: (...args: unknown[]) => void;
-    grecaptcha?: { getResponse: () => string };
+    grecaptcha?: { getResponse: () => string; reset: () => void };
   }
 }
 
@@ -67,6 +66,7 @@ function readTrackingValues() {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState("");
@@ -139,12 +139,20 @@ export default function Home() {
 
     try {
       setStatus("submitting");
-      const response = await fetch(HUBSPOT_SUBMIT_URL, {
+      const response = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...payload,
+          captchaResponse,
+        }),
       });
-      if (!response.ok) throw new Error("We couldn't send your request. Please call us instead.");
+      const result = (await response.json()) as { ok?: boolean; error?: string };
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || "We couldn't send your request. Please call us instead.");
+      }
+
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: "form_submit",
@@ -152,9 +160,11 @@ export default function Home() {
         preferred_location: formData.get("preferred_location") || "",
       });
       window.fbq?.("track", "Lead");
-      window.location.href = "https://aihp.in/thankyou";
+      window.grecaptcha?.reset();
+      router.push("/thank-you");
     } catch (submissionError) {
       setStatus("error");
+      window.grecaptcha?.reset();
       setError(submissionError instanceof Error ? submissionError.message : "Please try again or call +91 73030 60067.");
     }
   }
@@ -399,7 +409,21 @@ export default function Home() {
                 ["Privacy", "Dedicated office", "Dedicated office", "Shared amenities"],
                 ["Facility management", "Included", "Self-managed", "Included"],
                 ["Ability to scale", "Built in", "Fixed capacity", "Limited options"],
-              ].map((row) => <div className="comparison-row" role="row" key={row[0]}>{row.map((cell, index) => index === 1 ? <strong role="cell" key={cell}>{cell}</strong> : <span role="cell" key={cell}>{cell}</span>)}</div>)}
+              ].map((row) => (
+                <div className="comparison-row" role="row" key={row[0]}>
+                  {row.map((cell, index) =>
+                    index === 1 ? (
+                      <strong role="cell" key={`${row[0]}-${index}-${cell}`}>
+                        {cell}
+                      </strong>
+                    ) : (
+                      <span role="cell" key={`${row[0]}-${index}-${cell}`}>
+                        {cell}
+                      </span>
+                    ),
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </section>
