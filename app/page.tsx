@@ -429,7 +429,7 @@ export default function Home() {
         </section>
 
         <section className="testimonial-section section-shell">
-          <div className="section-heading"><p className="eyebrow">What clients say</p><h2>Trusted with the places people work.</h2></div>
+          <div className="section-heading"><p className="eyebrow">What clients say</p><h2>Trusted by Teams that Value Excellence.</h2></div>
           <div className="testimonial-grid">
             <blockquote>
               <p>“AIHP transformed our office into a brand-aligned, client-ready space. Their design expertise and professional execution make them a trusted partner.”</p>
