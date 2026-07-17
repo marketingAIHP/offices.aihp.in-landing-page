@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { siteUrl } from "../lib/site";
 
 const HUBSPOT_SUBMIT_URL =
   "https://api.hsforms.com/submissions/v3/integration/submit/45909301/345ea5aa-a700-41ca-a9b0-f86fac97fc6f";
@@ -46,26 +48,32 @@ function getCookies() {
   }, {});
 }
 
+function readTrackingValues() {
+  const names = ["gclid", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+  const params = new URLSearchParams(window.location.search);
+  const cookies = getCookies();
+  const values: TrackingValues = {};
+
+  names.forEach((name) => {
+    const queryValue = params.get(name);
+    const value = queryValue || cookies[name] || "";
+    values[name] = value;
+    if (queryValue) {
+      document.cookie = `${name}=${encodeURIComponent(queryValue)};max-age=7776000;path=/;SameSite=Lax`;
+    }
+  });
+
+  return values;
+}
+
 export default function Home() {
   const [step, setStep] = useState<1 | 2>(1);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState("");
-  const [tracking, setTracking] = useState<TrackingValues>({});
+  const trackingRef = useRef<TrackingValues>({});
 
   useEffect(() => {
-    const names = ["gclid", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
-    const params = new URLSearchParams(window.location.search);
-    const cookies = getCookies();
-    const values: TrackingValues = {};
-    names.forEach((name) => {
-      const queryValue = params.get(name);
-      const value = queryValue || cookies[name] || "";
-      values[name] = value;
-      if (queryValue) {
-        document.cookie = `${name}=${encodeURIComponent(queryValue)};max-age=7776000;path=/;SameSite=Lax`;
-      }
-    });
-    setTracking(values);
+    trackingRef.current = readTrackingValues();
   }, []);
 
   useEffect(() => {
@@ -80,6 +88,19 @@ export default function Home() {
 
   function advanceForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const seatsNeeded = String(formData.get("no_of_workstations_required") || "").trim();
+    const preferredLocation = String(formData.get("preferred_location") || "").trim();
+
+    if (!seatsNeeded || !preferredLocation) {
+      setStatus("error");
+      setError("Please select your team size and preferred location to continue.");
+      return;
+    }
+
+    setStatus("idle");
+    setError("");
     setStep(2);
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: "form_step_complete", form_name: "lease_lead_form", step: 1 });
@@ -104,7 +125,10 @@ export default function Home() {
     const cookies = getCookies();
     const payload = {
       fields: fieldNames
-        .map((name) => ({ name, value: String(formData.get(name) || "") }))
+        .map((name) => ({
+          name,
+          value: String(formData.get(name) || trackingRef.current[name] || ""),
+        }))
         .filter((field) => field.value),
       context: {
         hutk: cookies.hubspotutk,
@@ -139,7 +163,7 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     name: "AIHP - Managed Office Space in Gurgaon",
-    url: "https://lease.aihp.in/",
+    url: `${siteUrl}/`,
     telephone: "+91-7303060067",
     email: "leasing@aihp.in",
     address: {
@@ -169,7 +193,13 @@ export default function Home() {
 
       <header className="site-header">
         <a className="brand" href="#top" aria-label="AIHP home">
-          <img src="/assets/AIHP LOGO Black.webp" alt="AIHP - Adding Value" width="597" height="494" />
+          <Image
+            src="/assets/AIHP LOGO Black.webp"
+            alt="AIHP - Adding Value"
+            width={597}
+            height={494}
+            sizes="84px"
+          />
           <span>Managed workspaces</span>
         </a>
         <nav aria-label="Primary navigation">
@@ -198,15 +228,35 @@ export default function Home() {
           <div className="office-stage">
             <div className="office-gallery" aria-label="AIHP managed office spaces">
               <figure className="gallery-main">
-                <img src="/assets/gallery-1.webp" alt="AIHP branded reception in a managed Gurgaon office" width="800" height="450" fetchPriority="high" />
+                <Image
+                  src="/assets/gallery-1.webp"
+                  alt="AIHP branded reception in a managed Gurgaon office"
+                  width={800}
+                  height={450}
+                  fetchPriority="high"
+                  sizes="(max-width: 760px) 100vw, 48vw"
+                />
                 <figcaption>Built around your team</figcaption>
               </figure>
               <figure>
-                <img src="/assets/gallery-3.webp" alt="Premium collaboration lounge in an AIHP office" width="623" height="415" fetchPriority="high" />
+                <Image
+                  src="/assets/gallery-3.webp"
+                  alt="Premium collaboration lounge in an AIHP office"
+                  width={623}
+                  height={415}
+                  fetchPriority="high"
+                  sizes="(max-width: 760px) 50vw, 30vw"
+                />
                 <figcaption>Grade-A spaces</figcaption>
               </figure>
               <figure>
-                <img src="/assets/gallery-7.webp" alt="Enterprise boardroom managed by AIHP" width="623" height="415" />
+                <Image
+                  src="/assets/gallery-7.webp"
+                  alt="Enterprise boardroom managed by AIHP"
+                  width={623}
+                  height={415}
+                  sizes="(max-width: 760px) 50vw, 30vw"
+                />
                 <figcaption>Managed end-to-end</figcaption>
               </figure>
             </div>
@@ -214,18 +264,15 @@ export default function Home() {
             <aside className="lead-panel" id="quote-form" aria-label="Request an AIHP office plan">
               <p className="panel-kicker">Your 60-day move-in plan</p>
               <h2>Tell us what you need.</h2>
-              <p>Get a tailored shortlist, commercial estimate and delivery timeline.</p>
+              <p>Our team will contact you within 24 hours with a tailored office solution.</p>
 
-              <form onSubmit={step === 1 ? advanceForm : submitForm}>
-                {Object.entries(tracking).map(([name, value]) => (
-                  <input key={name} type="hidden" name={name} value={value} readOnly />
-                ))}
-
+              <form noValidate onSubmit={step === 1 ? advanceForm : submitForm}>
                 <div className="form-step" hidden={step !== 1}>
+                  <p className="step-label">Step 1 of 2 - tell us your office brief</p>
                   <div className="form-grid">
                     <label>
                       Seats needed
-                      <select name="no_of_workstations_required" required defaultValue="">
+                      <select name="no_of_workstations_required" defaultValue="">
                         <option value="" disabled>Select team size</option>
                         <option value="20 to 30">20 to 30</option>
                         <option value="31 to 50">31 to 50</option>
@@ -236,14 +283,14 @@ export default function Home() {
                     </label>
                     <label>
                       Preferred location
-                      <select name="preferred_location" required defaultValue="">
+                      <select name="preferred_location" defaultValue="">
                         <option value="" disabled>Select a corridor</option>
                         {locations.map((location) => <option key={location.name} value={location.name}>{location.name}</option>)}
                       </select>
                     </label>
                   </div>
-                  <button type="submit" className="primary-button">Get my office plan</button>
-                  <p className="form-note">No commitment. No spam.</p>
+                  {step === 1 && error && <p className="form-error" role="alert">{error}</p>}
+                  <button type="submit" className="primary-button">Next</button>
                 </div>
 
                 <div className="form-step" hidden={step !== 2}>
@@ -260,7 +307,7 @@ export default function Home() {
                   <button type="submit" className="primary-button" disabled={status === "submitting"}>
                     {status === "submitting" ? "Sending..." : "Send my requirements"}
                   </button>
-                  <button type="button" className="back-button" onClick={() => setStep(1)}>Back</button>
+                  <button type="button" className="back-button" onClick={() => { setError(""); setStatus("idle"); setStep(1); }}>Back</button>
                 </div>
               </form>
               <p className="panel-locations">Udyog Vihar · NH8 · Sector 32 · Golf Course Extension Road</p>
@@ -271,10 +318,18 @@ export default function Home() {
         <section className="client-strip" aria-label="Selected AIHP clients">
           <p>Trusted by 500+ companies</p>
           <div>
-            <img src="/assets/client-anandrathi.webp" alt="Anand Rathi" width="300" height="182" loading="lazy" />
-            <img src="/assets/client-olx.webp" alt="OLX" width="300" height="182" loading="lazy" />
-            <img src="/assets/client-arcelormittal.webp" alt="ArcelorMittal" width="300" height="182" loading="lazy" />
-            <img src="/assets/client-dentsu.webp" alt="Dentsu" width="300" height="182" loading="lazy" />
+            <div className="client-logo-frame">
+              <Image src="/assets/client-anandrathi.webp" alt="Anand Rathi" width={300} height={182} loading="lazy" sizes="190px" />
+            </div>
+            <div className="client-logo-frame">
+              <Image src="/assets/client-olx.webp" alt="OLX" width={300} height={182} loading="lazy" sizes="190px" />
+            </div>
+            <div className="client-logo-frame">
+              <Image src="/assets/client-arcelormittal.webp" alt="ArcelorMittal" width={300} height={182} loading="lazy" sizes="190px" />
+            </div>
+            <div className="client-logo-frame">
+              <Image src="/assets/client-dentsu.webp" alt="Dentsu" width={300} height={182} loading="lazy" sizes="190px" />
+            </div>
           </div>
         </section>
 
@@ -296,12 +351,19 @@ export default function Home() {
             <div className="section-heading">
               <p className="eyebrow">Eight Gurgaon corridors</p>
               <h2>Where your teams want to be.</h2>
-              <p>Managed offices close to the city's most important commercial and transport hubs.</p>
+              <p>Managed offices close to the city&apos;s most important commercial and transport hubs.</p>
             </div>
             <div className="locations-grid">
               {locations.map((location) => (
                 <article className="location-card" key={location.name}>
-                  <img src={location.image} alt={`AIHP office space in ${location.name}, Gurgaon`} width="800" height="450" loading="lazy" />
+                  <Image
+                    src={location.image}
+                    alt={`AIHP office space in ${location.name}, Gurgaon`}
+                    width={800}
+                    height={450}
+                    loading="lazy"
+                    sizes="(max-width: 760px) 84vw, (max-width: 1100px) 50vw, 25vw"
+                  />
                   <div className="location-body">
                     <p>{location.detail}</p>
                     <h3>{location.name}</h3>
@@ -347,15 +409,15 @@ export default function Home() {
           <div className="testimonial-grid">
             <blockquote>
               <p>“AIHP transformed our office into a brand-aligned, client-ready space. Their design expertise and professional execution make them a trusted partner.”</p>
-              <footer><img src="/assets/mukesh-kumawat.webp" alt="Mukesh Kumawat" width="200" height="201" loading="lazy" /><span><strong>Mukesh Kumawat</strong>Executive Director & Unit Head, Anand Rathi Wealth</span></footer>
+              <footer><Image src="/assets/mukesh-kumawat.webp" alt="Mukesh Kumawat" width={200} height={201} loading="lazy" sizes="48px" /><span><strong>Mukesh Kumawat</strong>Executive Director & Unit Head, Anand Rathi Wealth</span></footer>
             </blockquote>
             <blockquote>
               <p>“From top-tier offices to tailored designs, every aspect exceeds expectations. Choosing AIHP for our Gurgaon office was simple.”</p>
-              <footer><img src="/assets/sudhir-sharma.webp" alt="Sudhir Sharma" width="200" height="200" loading="lazy" /><span><strong>Sudhir Sharma</strong>Regional Head, ArcelorMittal Nippon Steel</span></footer>
+              <footer><Image src="/assets/sudhir-sharma.webp" alt="Sudhir Sharma" width={200} height={200} loading="lazy" sizes="48px" /><span><strong>Sudhir Sharma</strong>Regional Head, ArcelorMittal Nippon Steel</span></footer>
             </blockquote>
             <blockquote>
               <p>“Their team created diverse collaboration spaces with excellent amenities and natural light. The design team truly understood our needs.”</p>
-              <footer><img src="/assets/harpreet-singh.webp" alt="Harpreet Singh" width="200" height="200" loading="lazy" /><span><strong>Harpreet Singh</strong>Co-founder, ProcDNA</span></footer>
+              <footer><Image src="/assets/harpreet-singh.webp" alt="Harpreet Singh" width={200} height={200} loading="lazy" sizes="48px" /><span><strong>Harpreet Singh</strong>Co-founder, ProcDNA</span></footer>
             </blockquote>
           </div>
         </section>
@@ -385,7 +447,7 @@ export default function Home() {
       </main>
 
       <footer className="site-footer">
-        <div className="footer-brand"><img src="/assets/logo-white.webp" alt="AIHP" width="200" height="120" /><p>Premium managed offices in Gurgaon. Designed, built and operated around your business.</p></div>
+        <div className="footer-brand"><Image src="/assets/logo-white.webp" alt="AIHP" width={200} height={120} sizes="112px" /><p>Premium managed offices in Gurgaon. Designed, built and operated around your business.</p></div>
         <div><p className="footer-label">Contact</p><a href="tel:+917303060067">+91 73030 60067</a><a href="mailto:leasing@aihp.in">leasing@aihp.in</a><p>AIHP Tower, 249 G, Udyog Vihar, Phase 4, Gurgaon 122015</p></div>
         <div><p className="footer-label">Explore</p><a href="#locations">Locations</a><a href="#why-aihp">Why AIHP</a><a href="#process">How it works</a><a href="#faq">FAQ</a></div>
         <div className="footer-bottom"><span>© 2026 AIHP. All rights reserved.</span><span><a href="https://aihp.in/privacy-policy/">Privacy</a> · <a href="https://aihp.in/terms-of-service/">Terms</a></span></div>
