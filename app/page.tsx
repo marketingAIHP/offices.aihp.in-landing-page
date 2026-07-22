@@ -3,7 +3,6 @@
 import Image from "next/image";
 import type { FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { siteUrl } from "../lib/site";
 
 const RECAPTCHA_SITE_KEY = "6Lf4ntUrAAAAAC_d1AU2Um-wqr0iZxVOax6rdkDN";
@@ -66,7 +65,6 @@ function readTrackingValues() {
 }
 
 export default function Home() {
-  const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState("");
@@ -161,7 +159,7 @@ export default function Home() {
       });
       window.fbq?.("track", "Lead");
       window.grecaptcha?.reset();
-      router.push("/thank-you");
+      window.location.assign("https://aihp.in/thankyou");
     } catch (submissionError) {
       setStatus("error");
       window.grecaptcha?.reset();
