@@ -27,6 +27,27 @@ const faqs = [
 ] as const;
 
 type TrackingValues = Record<string, string>;
+type CustomerData = Partial<{
+  email: string;
+  phone_number: string;
+  first_name: string;
+  last_name: string;
+  street: string;
+  city: string;
+  region: string;
+  postal_code: string;
+  country: string;
+}>;
+type MetaCustomerData = Partial<{
+  em: string;
+  ph: string;
+  fn: string;
+  ln: string;
+  ct: string;
+  st: string;
+  zp: string;
+  country: string;
+}>;
 
 declare global {
   interface Window {
@@ -62,6 +83,60 @@ function readTrackingValues() {
   });
 
   return values;
+}
+
+function normalizeEmail(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function normalizePhone(value: string) {
+  return value.replace(/[\s()-]/g, "").replace(/\D/g, "");
+}
+
+function splitFullName(value: string) {
+  const parts = value.trim().split(/\s+/).filter(Boolean);
+
+  return {
+    firstName: parts[0] || "",
+    lastName: parts.slice(1).join(" "),
+  };
+}
+
+function buildCustomerData(formData: FormData) {
+  const email = normalizeEmail(String(formData.get("email") || ""));
+  const phoneNumber = normalizePhone(String(formData.get("phone") || ""));
+  const { firstName, lastName } = splitFullName(String(formData.get("full_name") || ""));
+
+  const googleCustomerData: CustomerData = {};
+  const metaCustomerData: MetaCustomerData = {};
+
+  if (email) {
+    googleCustomerData.email = email;
+    metaCustomerData.em = email;
+  }
+
+  if (phoneNumber) {
+    googleCustomerData.phone_number = phoneNumber;
+    metaCustomerData.ph = phoneNumber;
+  }
+
+  if (firstName) {
+    googleCustomerData.first_name = firstName;
+    metaCustomerData.fn = firstName;
+  }
+
+  if (lastName) {
+    googleCustomerData.last_name = lastName;
+    metaCustomerData.ln = lastName;
+  }
+
+  return { googleCustomerData, metaCustomerData };
+}
+
+function waitForTrackingWindow() {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 200);
+  });
 }
 
 export default function Home() {
@@ -151,14 +226,26 @@ export default function Home() {
         throw new Error(result.error || "We couldn't send your request. Please call us instead.");
       }
 
+      const { googleCustomerData, metaCustomerData } = buildCustomerData(formData);
+
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: "form_submit",
         form_name: "lease_lead_form",
         preferred_location: formData.get("preferred_location") || "",
       });
+      window.dataLayer.push({
+        event: "generate_lead",
+        form_name: "lease_lead_form",
+        preferred_location: formData.get("preferred_location") || "",
+        ...googleCustomerData,
+      });
+      if (Object.keys(metaCustomerData).length > 0) {
+        window.fbq?.("set", "userData", metaCustomerData);
+      }
       window.fbq?.("track", "Lead");
       window.grecaptcha?.reset();
+      await waitForTrackingWindow();
       window.location.assign("https://aihp.in/thankyou");
     } catch (submissionError) {
       setStatus("error");
