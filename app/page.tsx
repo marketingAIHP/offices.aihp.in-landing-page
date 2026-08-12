@@ -8,18 +8,18 @@ import { siteUrl } from "../lib/site";
 const RECAPTCHA_SITE_KEY = "6Lf4ntUrAAAAAC_d1AU2Um-wqr0iZxVOax6rdkDN";
 
 const locations = [
-  { name: "Udyog Vihar", detail: "Near Cyber City", seats: "20-300+ seats", price: "From ₹4,500", image: "/assets/location-udyog-vihar.webp" },
+  { name: "Udyog Vihar", detail: "Near Cyber City", seats: "20-300+ seats", price: "From ₹6,500", image: "/assets/location-udyog-vihar.webp" },
   { name: "NH8", detail: "Direct highway access", seats: "50-500+ seats", price: "From ₹6,500", image: "/assets/location-nh8.webp" },
   { name: "Sector 32", detail: "Seamless NH-48 access", seats: "30-200+ seats", price: "From ₹6,500", image: "/assets/location-sector-32.webp" },
   { name: "Golf Course Ext. Road", detail: "Premium commercial corridor", seats: "50-500+ seats", price: "From ₹7,000", image: "/assets/location-golf-course-ext-road.webp" },
   { name: "Golf Course Road", detail: "Prime business district", seats: "20-400+ seats", price: "From ₹7,500", image: "/assets/location-golf-course-road.webp" },
-  { name: "Sector 50", detail: "High-demand micro-market", seats: "20-200+ seats", price: "From ₹6,500", image: "/assets/location-sector-50.webp" },
+  { name: "Sector 50", detail: "High-demand micro-market", seats: "20-200+ seats", price: "From ₹5,500", image: "/assets/location-sector-50.webp" },
   { name: "MG Road", detail: "Metro-connected offices", seats: "30-300+ seats", price: "From ₹7,000", image: "/assets/location-mg-road.webp" },
   { name: "Sohna Road", detail: "Fast-growing office corridor", seats: "50-500+ seats", price: "From ₹6,000", image: "/assets/location-sohna-road.webp" },
 ] as const;
 
 const faqs = [
-  ["What is the starting rent for an AIHP office in Gurgaon?", "AIHP managed offices start from ₹4,500 per seat per month in Udyog Vihar. Pricing varies by location, specification and team size."],
+  ["What is the starting rent for an AIHP office in Gurgaon?", "AIHP managed offices start from ₹5,500 per seat per month. Udyog Vihar starts from ₹6,500 per seat per month. Pricing varies by location, specification and team size."],
   ["What does zero CapEx include?", "AIHP funds and manages the office design, fit-out, furniture and operational setup. You move into a finished office without a separate upfront fit-out investment."],
   ["Can the office be designed around our brand?", "Yes. Layouts, finishes, reception areas, signage and collaboration spaces are customised to your brief and brand standards."],
   ["How quickly can our office be ready?", "A typical AIHP office is designed, built and made operational within 60 days after the brief and commercial terms are approved."],
@@ -321,7 +321,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="hero-copy">Custom-built, fully managed Grade-A offices across eight prime Gurgaon locations. Zero CapEx.</p>
-            <p className="hero-price"><span>From</span> ₹4,500 <small>/ seat / month</small></p>
+            <p className="hero-price"><span>From</span> ₹5,500 <small>/ seat / month</small></p>
           </div>
 
           <div className="proof-ledger" aria-label="AIHP at a glance">

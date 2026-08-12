@@ -6,7 +6,7 @@ import { siteUrl } from "../lib/site";
 export const metadata: Metadata = {
   title: "Office Space for Rent in Gurgaon | AIHP Managed Offices",
   description:
-    "Custom-built managed office space in Gurgaon from ₹4,500 per seat. Eight prime locations, zero CapEx and a 60-day move-in plan.",
+    "Custom-built managed office space in Gurgaon from ₹5,500 per seat. Eight prime locations, zero CapEx and a 60-day move-in plan.",
   metadataBase: new URL(siteUrl),
   alternates: { canonical: "/" },
   icons: { icon: "/favicon.webp", shortcut: "/favicon.webp" },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Your Gurgaon office. Ready in 60 days.",
-    description: "Managed Gurgaon offices from ₹4,500 per seat. Zero CapEx.",
+    description: "Managed Gurgaon offices from ₹5,500 per seat. Zero CapEx.",
     images: ["/og.png"],
   },
 };
