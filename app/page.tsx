@@ -375,7 +375,7 @@ export default function Home() {
               <form noValidate onSubmit={step === 1 ? advanceForm : submitForm}>
                 <div className="form-step" hidden={step !== 1}>
                   <p className="step-label">Step 1 of 2 - tell us your office brief</p>
-                  <div className="form-grid">
+                  <div className="form-grid brief-form-grid">
                     <label className="form-field">
                       Seats needed
                       <span className="select-wrap">
