@@ -11,11 +11,11 @@ const locations = [
   { name: "Udyog Vihar", detail: "Near Cyber City", seats: "20-300+ seats", price: "From ₹6,500", image: "/assets/location-udyog-vihar.webp" },
   { name: "NH8", detail: "Direct highway access", seats: "50-500+ seats", price: "From ₹6,500", image: "/assets/location-nh8.webp" },
   { name: "Sector 32", detail: "Seamless NH-48 access", seats: "30-200+ seats", price: "From ₹6,500", image: "/assets/location-sector-32.webp" },
-  { name: "Golf Course Ext. Road", detail: "Premium commercial corridor", seats: "50-500+ seats", price: "From ₹7,000", image: "/assets/location-golf-course-ext-road.webp" },
-  { name: "Golf Course Road", detail: "Prime business district", seats: "20-400+ seats", price: "From ₹7,500", image: "/assets/location-golf-course-road.webp" },
+  { name: "Golf Course Ext. Road", detail: "Premium commercial corridor", seats: "50-500+ seats", price: "From ₹6,500", image: "/assets/location-golf-course-ext-road.webp" },
+  { name: "Golf Course Road", detail: "Prime business district", seats: "20-400+ seats", price: "Pricing on inquiry", image: "/assets/location-golf-course-road.webp" },
   { name: "Sector 50", detail: "High-demand micro-market", seats: "20-200+ seats", price: "From ₹5,500", image: "/assets/location-sector-50.webp" },
-  { name: "MG Road", detail: "Metro-connected offices", seats: "30-300+ seats", price: "From ₹7,000", image: "/assets/location-mg-road.webp" },
-  { name: "Sohna Road", detail: "Fast-growing office corridor", seats: "50-500+ seats", price: "From ₹6,000", image: "/assets/location-sohna-road.webp" },
+  { name: "MG Road", detail: "Metro-connected offices", seats: "30-300+ seats", price: "From ₹9,500", image: "/assets/location-mg-road.webp" },
+  { name: "Sohna Road", detail: "Fast-growing office corridor", seats: "50-500+ seats", price: "Pricing on inquiry", image: "/assets/location-sohna-road.webp" },
 ] as const;
 
 const faqs = [
@@ -574,7 +574,7 @@ export default function Home() {
         <div className="footer-brand"><Image src="/assets/logo-white.webp" alt="AIHP" width={200} height={120} sizes="112px" /><p>Premium managed offices in Gurgaon. Designed, built and operated around your business.</p></div>
         <div><p className="footer-label">Contact</p><a href="tel:+917303060067">+91 73030 60067</a><a href="mailto:leasing@aihp.in">leasing@aihp.in</a><p>AIHP Tower, 249 G, Udyog Vihar, Phase 4, Gurgaon 122015</p></div>
         <div><p className="footer-label">Explore</p><a href="#locations">Locations</a><a href="#why-aihp">Why AIHP</a><a href="#process">How it works</a><a href="#faq">FAQ</a></div>
-        <div className="footer-bottom"><span>© 2026 AIHP. All rights reserved.</span><span><a href="https://aihp.in/privacy-policy/">Privacy</a> · <a href="https://aihp.in/terms-of-service/">Terms</a></span></div>
+        <div className="footer-bottom"><span>© 2026 AIHP. All rights reserved.</span><span><a href="https://aihp.in/privacy">Privacy</a> · <a href="https://aihp.in/terms">Terms</a></span></div>
       </footer>
 
       <a className="mobile-sticky" href="#quote-form">Get my office plan</a>
