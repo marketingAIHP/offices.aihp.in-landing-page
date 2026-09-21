@@ -52,6 +52,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             });
           `}
         </Script>
+        <Script id="openai-ads-pixel" strategy="beforeInteractive">
+          {`
+            !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");
+            oaiq("init",{pixelId:"ShUfMHYzccxAA6JhYSfaUR",debug:true});
+            window.trackOpenAILead=function(){oaiq("measure","lead_created",{type:"customer_action"});};
+          `}
+        </Script>
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-T7QGCWDH"

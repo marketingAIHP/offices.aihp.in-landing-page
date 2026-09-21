@@ -14,6 +14,8 @@ declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];
     fbq?: (...args: unknown[]) => void;
+    oaiq?: (...args: unknown[]) => void;
+    trackOpenAILead?: () => void;
     grecaptcha?: { getResponse: () => string; reset: () => void };
   }
 }
@@ -97,6 +99,7 @@ export default function LeadForm({ locations }: { locations: readonly Location[]
       window.dataLayer.push({ event: "generate_lead", form_name: "lease_lead_form", preferred_location: formData.get("preferred_location") || "", ...googleCustomerData });
       if (Object.keys(metaCustomerData).length) window.fbq?.("set", "userData", metaCustomerData);
       window.fbq?.("track", "Lead"); window.grecaptcha?.reset();
+      window.trackOpenAILead?.();
       await new Promise<void>((resolve) => window.setTimeout(resolve, 200));
       window.location.assign("https://aihp.in/thankyou");
     } catch (submissionError) {
