@@ -59,7 +59,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        <Script id="google-tag-manager" strategy="afterInteractive">
+        <Script id="google-tag-manager" strategy="lazyOnload">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -70,9 +70,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </Script>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=GT-NFRRMSB6"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-tags" strategy="afterInteractive">
+        <Script id="google-tags" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -83,7 +83,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             gtag('config', 'G-KNP1GSP7DT');
           `}
         </Script>
-        <Script id="linkedin-insight" strategy="afterInteractive">
+        <Script id="linkedin-insight" strategy="lazyOnload">
           {`
             _linkedin_partner_id = "7096716";
             window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
@@ -98,7 +98,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             s.parentNode.insertBefore(b, s);})(window.lintrk);
           `}
         </Script>
-        <Script id="meta-pixel" strategy="afterInteractive">
+        <Script id="meta-pixel" strategy="lazyOnload">
           {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -110,6 +110,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '1656970768462741');
             fbq('track', 'PageView');
+          `}
+        </Script>
+        <Script id="openai-ads-pixel" strategy="lazyOnload">
+          {`
+            !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");
+            oaiq("init",{pixelId:"ShUfMHYzccxAA6JhYSfaUR",debug:true});
           `}
         </Script>
         <noscript>

@@ -350,7 +350,6 @@ export default function Home() {
                   alt="Premium collaboration lounge in an AIHP office"
                   width={623}
                   height={415}
-                  fetchPriority="high"
                   sizes="(max-width: 760px) 50vw, 30vw"
                 />
                 <figcaption>Grade-A spaces</figcaption>
