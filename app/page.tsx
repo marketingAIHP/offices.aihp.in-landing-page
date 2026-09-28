@@ -4,18 +4,18 @@ import { siteUrl } from "../lib/site";
 
 
 const locations = [
-  { name: "Udyog Vihar", detail: "Near Cyber City", seats: "20-300+ seats", price: "From ₹6,500", image: "/assets/location-udyog-vihar.webp" },
-  { name: "NH8", detail: "Direct highway access", seats: "50-500+ seats", price: "From ₹6,500", image: "/assets/location-nh8.webp" },
-  { name: "Sector 32", detail: "Seamless NH-48 access", seats: "30-200+ seats", price: "From ₹6,500", image: "/assets/location-sector-32.webp" },
-  { name: "Golf Course Ext. Road", detail: "Premium commercial corridor", seats: "50-500+ seats", price: "From ₹6,500", image: "/assets/location-golf-course-ext-road.webp" },
-  { name: "Golf Course Road", detail: "Prime business district", seats: "20-400+ seats", price: "Pricing on inquiry", image: "/assets/location-golf-course-road.webp" },
-  { name: "Sector 50", detail: "High-demand micro-market", seats: "20-200+ seats", price: "From ₹5,500", image: "/assets/location-sector-50.webp" },
-  { name: "MG Road", detail: "Metro-connected offices", seats: "30-300+ seats", price: "From ₹9,500", image: "/assets/location-mg-road.webp" },
-  { name: "Sohna Road", detail: "Fast-growing office corridor", seats: "50-500+ seats", price: "Pricing on inquiry", image: "/assets/location-sohna-road.webp" },
+  { name: "Udyog Vihar", detail: "Near Cyber City", seats: "20-300+ seats", price: "From ₹6,500", image: "/assets/location-udyog-vihar.webp", available: true },
+  { name: "NH8", detail: "Direct highway access", seats: "50-500+ seats", price: "From ₹6,500", image: "/assets/location-nh8.webp", available: true },
+  { name: "Sector 32", detail: "Seamless NH-48 access", seats: "30-200+ seats", price: "From ₹6,500", image: "/assets/location-sector-32.webp", available: true },
+  { name: "Golf Course Ext. Road", detail: "Premium commercial corridor", seats: "50-500+ seats", price: "From ₹6,500", image: "/assets/location-golf-course-ext-road.webp", available: true },
+  { name: "Golf Course Road", detail: "Prime business district", seats: "20-400+ seats", price: "Pricing on inquiry", image: "/assets/location-golf-course-road.webp", available: true },
+  { name: "Sector 50", detail: "High-demand micro-market", seats: "Currently fully leased", price: "Pricing on inquiry", image: "/assets/location-sector-50.webp", available: false },
+  { name: "MG Road", detail: "Metro-connected offices", seats: "30-300+ seats", price: "From ₹9,500", image: "/assets/location-mg-road.webp", available: true },
+  { name: "Sohna Road", detail: "Fast-growing office corridor", seats: "50-500+ seats", price: "Pricing on inquiry", image: "/assets/location-sohna-road.webp", available: true },
 ] as const;
 
 const faqs = [
-  ["What is the starting rent for an AIHP office in Gurgaon?", "AIHP managed offices start from ₹5,500 per seat per month. Udyog Vihar starts from ₹6,500 per seat per month. Pricing varies by location, specification and team size."],
+  ["What is the starting rent for an AIHP office in Gurgaon?", "AIHP managed offices start from ₹6,500 per seat per month. Pricing varies by location, specification and team size."],
   ["What does zero CapEx include?", "AIHP funds and manages the office design, fit-out, furniture and operational setup. You move into a finished office without a separate upfront fit-out investment."],
   ["Can the office be designed around our brand?", "Yes. Layouts, finishes, reception areas, signage and collaboration spaces are customised to your brief and brand standards."],
   ["How quickly can our office be ready?", "A typical AIHP office is designed, built and made operational within 60 days after the brief and commercial terms are approved."],
@@ -30,6 +30,7 @@ export default function Home() {
     url: `${siteUrl}/`,
     telephone: "+91-7303060067",
     email: "leasing@aihp.in",
+    priceRange: "₹6,500–15,000 per seat per month",
     address: {
       "@type": "PostalAddress",
       streetAddress: "AIHP Tower, 249 G, Udyog Vihar, Phase 4",
@@ -90,7 +91,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="hero-copy">Custom-built, fully managed Grade-A offices across eight prime Gurgaon locations. Zero CapEx.</p>
-            <p className="hero-price"><span>From</span> ₹5,500 <small>/ seat / month</small></p>
+            <p className="hero-price"><span>Starting from</span> ₹6,500 <small>/ seat / month *</small></p>
           </div>
 
           <div className="proof-ledger" aria-label="AIHP at a glance">
@@ -193,7 +194,14 @@ export default function Home() {
                   <div className="location-body">
                     <p>{location.detail}</p>
                     <h3>{location.name}</h3>
-                    <div><span>{location.seats}</span><strong>{location.price}</strong></div>
+                    {location.available ? (
+                      <div>
+                        <span>{location.seats}</span>
+                        <strong>{location.price} ✓ Available Now</strong>
+                      </div>
+                    ) : (
+                      <div><strong>{location.seats} · {location.price}</strong></div>
+                    )}
                   </div>
                 </article>
               ))}
@@ -220,6 +228,7 @@ export default function Home() {
               <div className="comparison-row comparison-head" role="row"><span role="columnheader">What matters</span><strong role="columnheader">AIHP managed</strong><span role="columnheader">Traditional lease</span><span role="columnheader">Coworking</span></div>
               {[
                 ["Upfront fit-out", "Zero CapEx", "₹50L-2Cr+", "Usually none"],
+                ["Cost per Seat (Gurgaon)", "₹6,500–15,000/mo", "Varies by location", "Varies by provider"],
                 ["Brand experience", "Fully customised", "Customisable", "Shared identity"],
                 ["Move-in timeline", "60 days", "4-8 months", "Immediate"],
                 ["Privacy", "Dedicated office", "Dedicated office", "Shared amenities"],
