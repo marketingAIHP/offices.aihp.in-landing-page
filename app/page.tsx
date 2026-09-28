@@ -200,7 +200,10 @@ export default function Home() {
                         <strong>{location.price} ✓ Available Now</strong>
                       </div>
                     ) : (
-                      <div><strong>{location.seats} · {location.price}</strong></div>
+                      <div className="fully-leased-status">
+                        <strong>{location.seats}</strong>
+                        <strong>{location.price}</strong>
+                      </div>
                     )}
                   </div>
                 </article>
