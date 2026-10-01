@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 import MarketingPixels from "./marketing-pixels";
+import ConsentBanner from "./consent-banner";
 import { siteUrl } from "../lib/site";
 
 export const metadata: Metadata = {
@@ -45,11 +46,33 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('consent', 'default', {
+              ad_storage: 'granted',
+              ad_user_data: 'granted',
+              ad_personalization: 'granted',
+              analytics_storage: 'granted',
+              functionality_storage: 'granted',
+              personalization_storage: 'granted',
+              security_storage: 'granted'
+            });
+            gtag('consent', 'default', {
               ad_storage: 'denied',
               ad_user_data: 'denied',
               ad_personalization: 'denied',
-              analytics_storage: 'granted'
+              analytics_storage: 'denied',
+              region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'],
+              wait_for_update: 500
             });
+            try {
+              var consentMatch = document.cookie.match(/(?:^|; )aihp-consent=([^;]+)/);
+              if (consentMatch) {
+                var consent = JSON.parse(decodeURIComponent(consentMatch[1]));
+                if (consent && consent.necessary === true) {
+                  var analytics = consent.analytics ? 'granted' : 'denied';
+                  var marketing = consent.marketing ? 'granted' : 'denied';
+                  gtag('consent', 'update', { analytics_storage: analytics, ad_storage: marketing, ad_user_data: marketing, ad_personalization: marketing });
+                }
+              }
+            } catch (error) {}
           `}
         </Script>
         <Script id="openai-ads-pixel" strategy="beforeInteractive">
@@ -68,6 +91,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           />
         </noscript>
         <MarketingPixels />
+        <ConsentBanner />
         <noscript>
           <img
             height="1"

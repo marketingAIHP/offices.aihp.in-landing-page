@@ -12,7 +12,7 @@ type MetaCustomerData = Partial<{ em: string; ph: string; fn: string; ln: string
 
 declare global {
   interface Window {
-    dataLayer?: Record<string, unknown>[];
+    dataLayer?: unknown[];
     fbq?: (...args: unknown[]) => void;
     oaiq?: (...args: unknown[]) => void;
     trackOpenAILead?: () => void;
@@ -95,13 +95,24 @@ export default function LeadForm({ locations }: { locations: readonly Location[]
       if (!response.ok || !result.ok) throw new Error(result.error || "We couldn't send your request. Please call us instead.");
       const { googleCustomerData, metaCustomerData } = buildCustomerData(formData);
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: "form_submit", form_name: "lease_lead_form", preferred_location: formData.get("preferred_location") || "" });
-      window.dataLayer.push({ event: "generate_lead", form_name: "lease_lead_form", preferred_location: formData.get("preferred_location") || "", ...googleCustomerData });
+      let redirected = false;
+      const redirect = () => {
+        if (redirected) return;
+        redirected = true;
+        window.location.assign("https://aihp.in/thankyou");
+      };
+      const fallbackRedirect = window.setTimeout(redirect, 2_000);
+      window.dataLayer.push({
+        event: "generate_lead",
+        form_name: "lease_lead_form",
+        preferred_location: formData.get("preferred_location") || "",
+        ...googleCustomerData,
+        eventCallback: () => { window.clearTimeout(fallbackRedirect); redirect(); },
+        eventTimeout: 2_000,
+      });
       if (Object.keys(metaCustomerData).length) window.fbq?.("set", "userData", metaCustomerData);
       window.fbq?.("track", "Lead"); window.grecaptcha?.reset();
       window.trackOpenAILead?.();
-      await new Promise<void>((resolve) => window.setTimeout(resolve, 200));
-      window.location.assign("https://aihp.in/thankyou");
     } catch (submissionError) {
       setStatus("error"); window.grecaptcha?.reset();
       setError(submissionError instanceof Error ? submissionError.message : "Please try again or call +91 73030 60067.");

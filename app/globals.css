@@ -364,6 +364,26 @@ h1 { font-size: clamp(52px, 7vw, 98px); line-height: 0.95; margin-bottom: 28px; 
   .mobile-sticky { display: flex; position: fixed; left: 12px; right: 12px; bottom: 10px; min-height: 54px; background: var(--burgundy); color: white; align-items: center; justify-content: center; z-index: 50; font-weight: 800; box-shadow: 0 12px 34px rgba(5,22,34,.34); }
 }
 
+.consent-banner {
+  position: fixed;
+  z-index: 60;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  max-width: 980px;
+  margin: auto;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 34px rgba(5, 22, 34, .2);
+}
+.consent-banner p { margin: 0 0 12px; }
+.consent-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.consent-actions button { padding: 9px 12px; border: 1px solid var(--navy); border-radius: 4px; background: #fff; color: var(--navy); font: inherit; cursor: pointer; }
+.consent-actions button:first-child, .consent-actions button:last-child { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
+.consent-actions label { display: inline-flex; align-items: center; gap: 5px; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
