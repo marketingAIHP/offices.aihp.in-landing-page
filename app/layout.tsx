@@ -40,6 +40,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-IN">
+      <head>
+        <Script id="google-generate-lead-event" strategy="beforeInteractive">
+          {`
+            gtag('event', 'generate_lead', {
+              // Event parameters can be added here.
+            });
+          `}
+        </Script>
+      </head>
       <body>
         <Script id="google-consent-mode" strategy="beforeInteractive">
           {`
